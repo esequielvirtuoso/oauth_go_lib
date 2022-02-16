@@ -1,4 +1,4 @@
-module github.com/esequielvirtuoso/oauth_go_lib/oauth
+module github.com/esequielvirtuoso/oauth_go_lib
 
 go 1.16
 
