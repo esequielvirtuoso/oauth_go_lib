@@ -16,7 +16,7 @@ const (
 	// This X-Public header is not being set by the client. It will be set by the NGINX server
 	// based on the condition if the request was generated from outside the network or inside the network.
 	headerXPublic   = "X-Public"
-	headerXClientID = "X-Client_Id"
+	headerXClientID = "X-Client-Id"
 	headerXCallerID = "X-Caller-Id"
 
 	paramAccessToken = "access_token"
@@ -36,7 +36,7 @@ type accessToken struct {
 }
 
 func IsPublic(request *http.Request) bool {
-	if request != nil {
+	if request == nil {
 		// this means it is a public request
 		return true
 	}
@@ -109,8 +109,8 @@ func getAccessToken(accessTokenID string) (*accessToken, restErrors.RestErr) {
 		return nil, restErrors.NewInternalServerError("invalid rest client response when trying to get access token", nil)
 	}
 	if response.StatusCode > 299 {
-		var restErr restErrors.RestErr
-		if err := json.Unmarshal(response.Bytes(), &restErr); err != nil {
+		restErr, err := restErrors.NewRestErrorFromBytes(response.Bytes())
+		if err != nil {
 			return nil, restErrors.NewInternalServerError("invalid error interface when trying to get access token", err)
 		}
 
